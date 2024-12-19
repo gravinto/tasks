@@ -3,10 +3,12 @@ package org.tasks.compose.edit
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,19 +53,75 @@ fun PriorityRow(
 }
 
 @Composable
+fun LabelText(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyLarge,
+        modifier = Modifier.padding(end = 16.dp),
+        color = MaterialTheme.colorScheme.onSurface,
+    )
+}
+
+@Composable
 fun Priority(
     selected: Int,
     onClick: (Int) -> Unit = {},
     desaturate: Boolean,
 ) {
-    Row(horizontalArrangement = Arrangement.SpaceBetween) {
-        for (i in Task.Priority.NONE downTo Task.Priority.HIGH) {
-            PriorityButton(
-                priority = i,
-                selected = selected,
-                onClick = onClick,
-                desaturate = desaturate,
-            )
+    // Arrange as Eisenhower Matrix
+    Row(horizontalArrangement = Arrangement.Center) {
+        Column(
+            modifier = Modifier.weight(0.4f),
+            horizontalAlignment = Alignment.End
+
+        ) {
+            Row(modifier = Modifier.height(25.dp)) { LabelText("") }
+            Row(modifier = Modifier.height(25.dp)) { LabelText("Important") }
+            Row(modifier = Modifier.height(25.dp)) { LabelText("N/Important") }
+        }
+        Column(
+            modifier = Modifier.weight(0.25f),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(modifier = Modifier.height(25.dp)) { LabelText("Urgent") }
+            Row(modifier = Modifier.height(25.dp)) {
+                PriorityButton(
+                    priority = Task.Priority.HIGH,
+                    selected = selected,
+                    onClick = onClick,
+                    desaturate = desaturate,
+                )
+            }
+            Row(modifier = Modifier.height(25.dp)) {
+                PriorityButton(
+                    priority = Task.Priority.LOW,
+                    selected = selected,
+                    onClick = onClick,
+                    desaturate = desaturate,
+                )
+            }
+        }
+        Column(
+            modifier = Modifier.weight(0.3f),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(modifier = Modifier.height(25.dp)) { LabelText("N/Urgent") }
+            Row(modifier = Modifier.height(25.dp)) {
+                PriorityButton(
+                    priority = Task.Priority.MEDIUM,
+                    selected = selected,
+                    onClick = onClick,
+                    desaturate = desaturate,
+                )
+            }
+            Row(modifier = Modifier.height(25.dp)) {
+                PriorityButton(
+                    priority = Task.Priority.NONE,
+                    selected = selected,
+                    onClick = onClick,
+                    desaturate = desaturate,
+                )
+            }
         }
     }
 }
@@ -83,12 +141,12 @@ fun PriorityLabeled(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
+        /*Text(
             text = stringResource(id = R.string.TEA_importance_label),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(end = 16.dp),
             color = MaterialTheme.colorScheme.onSurface,
-        )
+        )*/
         Spacer(modifier = Modifier.weight(1f))
         Priority(selected = selected, onClick = onClick, desaturate = desaturate)
     }
@@ -121,7 +179,7 @@ fun RowScope.PriorityButton(
             ),
             modifier = Modifier
                 .weight(1f)
-                .padding(vertical = 20.dp)
+                .padding(vertical = 5.dp)
         )
     }
 }
@@ -133,7 +191,7 @@ fun RowScope.PriorityButton(
 fun PriorityPreview() {
     TasksTheme {
         PriorityRow(
-            priority = Task.Priority.MEDIUM,
+            priority = Task.Priority.NONE,
             onChangePriority = {},
             desaturate = true,
         )
